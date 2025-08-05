@@ -1,0 +1,30 @@
+﻿import time
+import requests
+import os
+
+BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
+BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_USER_ID = os.getenv("TELEGRAM_USER_ID")
+
+def send_telegram_signal(message):
+    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
+    payload = {
+        "chat_id": TELEGRAM_USER_ID,
+        "text": message
+    }
+    requests.post(url, data=payload)
+
+def check_market():
+    send_telegram_signal("✅ Bot is live and checking markets...")
+    time.sleep(3)
+    send_telegram_signal("🔔 Example Signal: Buy BTCUSDT\nTrend: Up\nEntry: Bullish Engulfing on M15")
+
+if __name__ == "__main__":
+    while True:
+        try:
+            check_market()
+            time.sleep(60 * 30)
+        except Exception as e:
+            send_telegram_signal(f"❌ Error: {str(e)}")
+            time.sleep(60)
